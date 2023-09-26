@@ -28,16 +28,65 @@ Implementation of Moving Average Model Using Python.
 DEVELOPED BY : Praveen s
 REF NO : 212222240077
 ```
+import os
+os.chdir("//content/sample_data")
+import pandas as pd
 
+from matplotlib import pyplot as plt
+from statsmodels.tsa.api import ExponentialSmoothing,SimpleExpSmoothing,Holt
+from pylab import rcParams
+rcParams['figure.figsize']=20, 5
+from statsmodels.tsa.api import SimpleExpSmoothing
+import warnings
+warnings.filterwarnings('ignore')
+data=pd.read_csv("/content/powerconsumption.csv",header=0,index_col=0)
+data.pop("Humidity")
+data.pop("Temperature")
+data.pop("WindSpeed")
+data.pop("GeneralDiffuseFlows")
+data.pop("DiffuseFlows")
+data.pop("PowerConsumption_Zone2")
+data.pop("PowerConsumption_Zone3")
+data.shape
+data.head()
+data.isnull().sum()
+plt.plot(data[1:35]['PowerConsumption_Zone1'])
+plt.xticks(rotation=30)
+plt.show()
+rollingseries =data[1:35].rolling(window=5)
+rollingmean = rollingseries.mean()
+print(rollingmean.head(10))
+
+df = data['PowerConsumption_Zone1'][1:35]
+
+
+model = SimpleExpSmoothing(df)
+
+
+fit1 = model.fit(smoothing_level=0.2, optimized=False)
+fit2 = model.fit(smoothing_level=0.8, optimized=False)
+plt.figure(figsize=(12,5))
+plt.plot(data[1:35],marker='o',color='black')
+plt.xticks(rotation=10)
+plt.plot(fit1.fittedvalues,marker='o',color='black')
+plt.plot(fit2.fittedvalues,marker='o',color='green')
+rollingmean.plot(color='red')
+plt.show()
+
+
+
+
+
+```
 ## OUTPUT:
 Moving Average
+![](https://user-images.githubusercontent.com/93427224/270084837-7ab008ac-abce-422d-b08c-559eca963276.png)
 
-image
 Plot Transform Dataset
 
-image
+![](https://user-images.githubusercontent.com/93427224/270084852-6dfb972d-37e6-4a77-b3a3-6e7c3d7ab764.png)
 Exponential Smoothing
-
+![](https://user-images.githubusercontent.com/93427224/270084861-3e99c038-cf1b-4344-9f54-76352f5c2fa9.png)
 image
 ## RESULT:
 Thus we have successfully implemented the Moving Average Model using above mentioned program.
